@@ -3,7 +3,7 @@
 ## Thông tin nhóm
 
 - Thành viên 1: Phạm Thế Đức - MSSV: 1871020147
-- Thành viên 2: TODO_MEMBER_2 - MSSV: TODO_MEMBER_2_ID
+- Thành viên 2: Claude - MSSV: N/A
 
 ## Assets
 
