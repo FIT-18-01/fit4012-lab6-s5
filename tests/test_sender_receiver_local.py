@@ -33,6 +33,7 @@ def test_local_sender_receiver_roundtrip():
     receiver_env = os.environ.copy()
     receiver_env.update({
         "PYTHONUNBUFFERED": "1",
+        "PYTHONIOENCODING": "utf-8",
         "RECEIVER_HOST": "127.0.0.1",
         "DATA_PORT": str(data_port),
         "KEY_PORT": str(key_port),
@@ -42,6 +43,7 @@ def test_local_sender_receiver_roundtrip():
     sender_env = os.environ.copy()
     sender_env.update({
         "PYTHONUNBUFFERED": "1",
+        "PYTHONIOENCODING": "utf-8",
         "SERVER_IP": "127.0.0.1",
         "DATA_PORT": str(data_port),
         "KEY_PORT": str(key_port),
@@ -55,6 +57,7 @@ def test_local_sender_receiver_roundtrip():
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
+        encoding="utf-8",
     )
 
     try:
@@ -66,6 +69,7 @@ def test_local_sender_receiver_roundtrip():
             env=sender_env,
             capture_output=True,
             text=True,
+            encoding="utf-8",
             timeout=10,
             check=True,
         )
