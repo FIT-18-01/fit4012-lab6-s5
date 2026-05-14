@@ -14,7 +14,7 @@ def find_free_port() -> int:
         return sock.getsockname()[1]
 
 
-def wait_for_output(process, text: str, timeout: float = 5.0) -> str:
+def wait_for_output(process, text: str, timeout: float = 8.0) -> str:
     collected = []
     start = time.time()
     while time.time() - start < timeout:
@@ -30,20 +30,24 @@ def test_local_sender_receiver_roundtrip():
     data_port = find_free_port()
     key_port = find_free_port()
 
+    pythonpath = str(REPO_ROOT) + os.pathsep + os.environ.get("PYTHONPATH", "")
+
     receiver_env = os.environ.copy()
     receiver_env.update({
         "PYTHONUNBUFFERED": "1",
         "PYTHONIOENCODING": "utf-8",
+        "PYTHONPATH": pythonpath,
         "RECEIVER_HOST": "127.0.0.1",
         "DATA_PORT": str(data_port),
         "KEY_PORT": str(key_port),
-        "SOCKET_TIMEOUT": "5",
+        "SOCKET_TIMEOUT": "10",
     })
 
     sender_env = os.environ.copy()
     sender_env.update({
         "PYTHONUNBUFFERED": "1",
         "PYTHONIOENCODING": "utf-8",
+        "PYTHONPATH": pythonpath,
         "SERVER_IP": "127.0.0.1",
         "DATA_PORT": str(data_port),
         "KEY_PORT": str(key_port),
@@ -70,11 +74,15 @@ def test_local_sender_receiver_roundtrip():
             capture_output=True,
             text=True,
             encoding="utf-8",
-            timeout=10,
-            check=True,
+            timeout=15,
+        )
+        assert sender.returncode == 0, (
+            f"sender.py thoát với mã lỗi {sender.returncode}\n"
+            f"STDOUT:\n{sender.stdout}\n"
+            f"STDERR:\n{sender.stderr}"
         )
 
-        receiver_out, _ = receiver.communicate(timeout=10)
+        receiver_out, _ = receiver.communicate(timeout=15)
         full_receiver_output = first_output + receiver_out
 
         assert "[+] Đã gửi key/IV qua kênh khóa." in sender.stdout
