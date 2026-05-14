@@ -25,6 +25,7 @@ def receive_key_packet() -> bytes:
         server.settimeout(TIMEOUT)
         server.bind((HOST, KEY_PORT))
         server.listen(1)
+        print(f"[*] Receiver đang lắng nghe kênh khóa tại {HOST}:{KEY_PORT}", flush=True)
         conn, _ = server.accept()
 
         with conn:
@@ -42,6 +43,7 @@ def receive_data_packet() -> bytes:
         server.settimeout(TIMEOUT)
         server.bind((HOST, DATA_PORT))
         server.listen(1)
+        print(f"[*] Receiver đang lắng nghe kênh dữ liệu tại {HOST}:{DATA_PORT}", flush=True)
         conn, _ = server.accept()
 
         with conn:
@@ -55,22 +57,16 @@ def receive_data_packet() -> bytes:
 def main() -> None:
     lines = []
 
-    line = f"[*] Receiver đang lắng nghe kênh khóa tại {HOST}:{KEY_PORT}"
-    print(line)
-    lines.append(line)
-
     key_packet = receive_key_packet()
+    lines.append(f"[*] Receiver đang lắng nghe kênh khóa tại {HOST}:{KEY_PORT}")
     key, iv = parse_key_packet(key_packet)
 
     line = "[+] Đã nhận AES key và IV."
     print(line)
     lines.append(line)
 
-    line = f"[*] Receiver đang lắng nghe kênh dữ liệu tại {HOST}:{DATA_PORT}"
-    print(line)
-    lines.append(line)
-
     data_packet = receive_data_packet()
+    lines.append(f"[*] Receiver đang lắng nghe kênh dữ liệu tại {HOST}:{DATA_PORT}")
     length = parse_length_header(data_packet[:LENGTH_HEADER_SIZE])
     ciphertext = data_packet[LENGTH_HEADER_SIZE:]
 
